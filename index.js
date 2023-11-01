@@ -29,9 +29,26 @@ async function run() {
  
     const serviceCollection = client.db("CarDoctors").collection('services');
     const orderCollection   = client.db("CarDoctors").collection('serviceOrder');
+  
+    // services order store in database by post method
+    app.post('/order',async(req,res)=>{
+      const order = req.body
+      const result = await orderCollection.insertOne(order)
+      res.send(result)
+    })
+
+    // services order store in database by post method.
+    app.get('/order',async(req,res)=>{
+       let query = {}
+       if (req.query?.email) {
+          query = { email : req.query.email }
+       }
+       const result = await orderCollection.find(query).toArray()
+       res.send(result)
+    })
 
     // all services collection form database for display
-    app.get('/services',async(req,res) => {
+    app.get('/services',async(req,res) => { 
         const result = await serviceCollection.find().toArray()
         res.send(result)
     })
