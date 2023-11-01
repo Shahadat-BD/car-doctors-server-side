@@ -30,14 +30,14 @@ async function run() {
     const serviceCollection = client.db("CarDoctors").collection('services');
     const orderCollection   = client.db("CarDoctors").collection('serviceOrder');
   
-    // services order store in database by post method
+    // the user service order stored in database by post method.
     app.post('/order',async(req,res)=>{
       const order = req.body
       const result = await orderCollection.insertOne(order)
       res.send(result)
     })
 
-    // services order store in database by post method.
+    // the user services order collect form database by get method for display in client side.
     app.get('/order',async(req,res)=>{
        let query = {}
        if (req.query?.email) {
@@ -45,6 +45,21 @@ async function run() {
        }
        const result = await orderCollection.find(query).toArray()
        res.send(result)
+    })
+  // specific order service collect by get method 
+    app.get('/order/:id',async(req,res) => { 
+      const id = req.params.id
+      const query = {_id : new ObjectId(id) }
+      const result = await orderCollection.findOne(query)
+      res.send(result)
+  })
+
+    // specific order deleted by delete method
+    app.delete('/order/:id',async(req,res)=>{
+      const id = req.params.id
+      const query = { _id : new ObjectId(id) };
+      const result = await orderCollection.deleteOne(query);
+        res.send(result)
     })
 
     // all services collection form database for display
